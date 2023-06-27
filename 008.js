@@ -6,7 +6,7 @@ app.get("/sobre", function (req, res){
 })
 
 app.get("/ola/:nome", function (req, res){
-    res.send("Bem vindo a pagina ola")
+    res.send("Bem vindo a pagina ola"+req.params.nome)
 })
 
 
