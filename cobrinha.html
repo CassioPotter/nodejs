@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Jogo da Cobrinha</title>
+    <style>
+        #game-board {
+            width: 400px;
+            height: 400px;
+            border: 1px solid #000;
+        }
+    </style>
+</head>
+<body>
+    <h1>Jogo da Cobrinha</h1>
+    <div id="game-board"></div>
+
+    <script>
+        // Definindo o tamanho do bloco e a velocidade do jogo
+        const blockSize = 20;
+        const gameSpeed = 100;
+
+        // Obtendo a referência para o elemento do jogo
+        const gameBoard = document.getElementById('game-board');
+
+        // Calculando o número de blocos que cabem no tabuleiro
+        const boardWidth = gameBoard.offsetWidth / blockSize;
+        const boardHeight = gameBoard.offsetHeight / blockSize;
+
+        // Inicializando a posição e a direção da cobrinha
+        let snakeX = Math.floor(boardWidth / 2);
+        let snakeY = Math.floor(boardHeight / 2);
+        let snakeDX = 1;
+        let snakeDY = 0;
+
+        // Inicializando a posição da maçã
+        let appleX = Math.floor(Math.random() * boardWidth);
+        let appleY = Math.floor(Math.random() * boardHeight);
+
+        // Inicializando o tamanho da cobrinha
+        let snakeLength = 1;
+
+        // Movimentação da cobrinha
+        function moveSnake() {
+            snakeX += snakeDX;
+            snakeY += snakeDY;
+
+            // Verificando se a cobrinha colidiu com a parede
+            if (snakeX < 0 || snakeX >= boardWidth || snakeY < 0 || snakeY >= boardHeight) {
+                gameOver();
+                return;
+            }
+
+            // Verificando se a cobrinha colidiu com ela mesma
+            for (let i = 1; i < snakeBody.length; i++) {
+                if (snakeX === snakeBody[i].x && snakeY === snakeBody[i].y) {
+                    gameOver();
+                    return;
+                }
+            }
+
+            // Verificando se a cobrinha comeu a maçã
+            if (snakeX === appleX && snakeY === appleY) {
+                snakeLength++;
+                appleX = Math.floor(Math.random() * boardWidth);
+                appleY = Math.floor(Math.random() * boardHeight);
+            }
+
+            // Removendo a cauda da cobrinha se necessário
+            if (snakeBody.length === snakeLength) {
+                snakeBody.shift();
+            }
+
+            // Adicionando a nova posição da cabeça da cobrinha
+            snakeBody.push({ x: snakeX, y: snakeY });
+
+            // Atualizando o estado do jogo
+            updateGame();
+        }
+
+        // Atualizando o estado do jogo
+        function updateGame() {
+            // Limpar o tabuleiro
+            gameBoard.innerHTML = '';
+
+            // Desenhar a maçã
+            const appleElement = createBlock(appleX, appleY);
+            appleElement.style.backgroundColor = 'red';
+            gameBoard.appendChild(appleElement);
+
+            // Desenhar a cobrinha
+            for (let i = 0; i < snakeBody.length; i++) {
+                const block = snakeBody[i];
+                const blockElement = createBlock(block.x, block.y);
+                blockElement.style.backgroundColor = 'green';
+                gameBoard.appendChild(blockElement);
